@@ -11,6 +11,7 @@ A fast, local-first Retrieval-Augmented Generation (RAG) assistant over your doc
 - **Interactive UI**: Streamlit chat interface with history and session switching
 - **Persistence**: Chat history in SQLite, vectors in Chroma, uploaded docs stored on disk
 - **Observability**: Inline timings, doc count, and a detailed process log expander
+- **Chat History Memory**: Store and retrieve previous chats
 
 ### Tech Stack
 - Streamlit
@@ -83,6 +84,9 @@ RAG-app-with-ollama/
 ## Contributing
 Contributions are welcome! Please open an issue or PR with a clear description of the change.
 
----
+### Future Updation (Features to add)
+* Improve the UI with custom Streamlit styling
+* Adding Download option in chat
+* Make code faster and concise
 
-> Developed by Adya Prasad
+> Developed by Adya Prasad at night time 💫
