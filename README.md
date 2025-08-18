@@ -1,91 +1,181 @@
-markdown
+## RAG App with Ollama (Streamlit)
 
-# AI Document Assistant with RAG
+![App Screenshot](https://iili.io/FpFiAns.md.png)
 
-![AI Document Assistant Demo](https://ibb.co/7JV1nSJ)
+Build a fast, local-first Retrieval-Augmented Generation (RAG) assistant over your own documents using Streamlit, LangChain, ChromaDB, and Ollama. Upload PDFs, CSVs, JSON, or TXT files and ask natural questions; the app retrieves the most relevant chunks and answers using a local LLM.
 
-## Table of Contents
+### Key Features
+- **Local-first**: Runs entirely on your machine with Ollama models
+- **Multi-format ingestion**: PDF, CSV, JSON, TXT
+- **Fast retrieval**: ChromaDB vector store with tuned chunking and similarity search
+- **Interactive UI**: Streamlit chat interface with history and session switching
+- **Persistence**: Chat history in SQLite, vectors in Chroma, uploaded docs stored on disk
+- **Observability**: Inline timings, doc count, and a detailed process log expander
 
-1.  [Overview](#overview)
-2.  [Features](#features)
-3.  [Technology Stack](#technology-stack)
-4.  [Installation](#installation)
-5.  [Usage](#usage)
-6.  [Contributing](#contributing)
-7.  [License](#license)
-8.  [Contact](#contact)
+### Tech Stack
+- Streamlit UI
+- Ollama for LLM and embeddings
+- LangChain (chains, retrievers, loaders)
+- ChromaDB vector store
+- SQLite for chat session persistence
 
-## Overview
+---
 
-This project implements an AI Document Assistant leveraging **Retrieval-Augmented Generation (RAG)** to provide intelligent and accurate responses based on information extracted from documents. It aims to streamline document analysis, information retrieval, and question-answering processes for various applications.
+## Quickstart
 
-## Features
+### 1) Requirements
+- Python 3.10+
+- Ollama installed and running (ensure the background service/daemon is active)
 
-*   **Multi-Source Information Retrieval:** Efficiently extracts and synthesizes information from diverse sources, including PDFs and text files, using advanced algorithms.
-*   **Semantic Data Processing:** Converts text content into semantic vectors for precise information retrieval.
-*   **Dynamic Response Generation:** Utilizes a Large Language Model (LLM) to generate detailed, contextually relevant responses.
-*   **Intuitive Summarization:** Offers a PDF summarization tool that condenses lengthy documents into concise summaries.
-*   **Question Answering:** Allows users to ask questions in natural language and receive accurate answers grounded in the provided documents.
-*   **Reduced Hallucinations:** By grounding responses in your specific business knowledge, it significantly reduces the risks of inaccurate LLM output or hallucinations.
+### 2) Clone and install
+```bash
+git clone <this-repo-url>
+cd RAG-app-with-ollama
+python -m venv .venv
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+# macOS/Linux
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-## Technology Stack
+### 3) Pull required models in Ollama
+```bash
+ollama pull codegemma:latest
+ollama pull nomic-embed-text
+```
 
-*   **Python:** Main programming language used for the project.
-*   **LangChain:** Framework for building LLM-powered applications.
-*   **Vector Database (e.g., ChromaDB, FAISS, Pinecone):** Stores vector embeddings for efficient similarity searches.
-*   **Sentence Embedding Model (e.g., OpenAI Embeddings):** Converts text into vector representations.
-*   **Large Language Model (e.g., OpenAI GPT models):** Generates human-quality text responses.
+If you prefer different models, see Customization below.
 
-## Installation
+### 4) Run the app
+```bash
+streamlit run streamlit_app.py
+```
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/Adya-Prasad/AI-Document-Assistant-with-RAG.git
-    ```
-2.  **Navigate to the project directory:**
-    ```bash
-    cd AI-Document-Assistant-with-RAG
-    ```
-3.  **Create a virtual environment (recommended):**
-    ```bash
-    conda create -p venv python==3.9 -y 
-    conda activate venv
-    ```
-4.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-5.  **Configure API keys (if applicable):**  Create a `.env` file in the root directory and add your API keys for the LLM and vector database services.
+Open the provided local URL in your browser, upload a document, and start chatting.
 
-## Usage
+---
 
-1.  **Prepare your documents:** Place your PDF or text files in a designated folder within the project (e.g., `data/`).
-2.  **Process documents and create embeddings:** Run the script responsible for loading, chunking, and embedding your documents into the vector database. (You'll need to develop this script as part of your project).
-3.  **Start the RAG-powered chat interface:** (You'll need to develop this script, which will likely involve a user interface like Streamlit or a command-line interface as shown in the example below).
+## How It Works
+1. You upload a document (PDF/CSV/JSON/TXT). The app saves it under `processed_docs/` and computes a short file hash.
+2. The document is loaded via suitable LangChain document loaders.
+3. The content is split into tuned chunks (size ≈ 1800, overlap ≈ 400) for better recall.
+4. Chunks are embedded with `nomic-embed-text` and stored in a ChromaDB collection.
+5. Your question is used to retrieve the top-k similar chunks (k=5) from Chroma.
+6. A prompt with the retrieved context is sent to the chat model (`codegemma:latest` by default) to generate the answer.
+7. The UI shows timing metrics, retrieved context (under an expander), and maintains chat history per session.
 
-    For example, for a basic command-line interface:
+### Architecture
+```mermaid
+flowchart LR
+  U[User] -->|asks| S[Streamlit UI]
+  S -->|uploads| L[Loaders: PDF/CSV/JSON/TXT]
+  L --> SPLIT[Chunking]
+  SPLIT --> EMB[Embeddings (Ollama nomic-embed-text)]
+  EMB --> V[ChromaDB]
+  S -->|retrieves top-k| V
+  V -->|context| RAG[Prompt + Chain]
+  RAG --> LLM[Chat Model (Ollama codegemma)]
+  LLM -->|answer| S
+```
 
-    ```bash
-    python main.py  # Assuming your main application file is main.py
-    ```
-4.  **Ask questions:** Type your questions about the documents into the chat interface.
-5.  **Get answers:** The AI Assistant will provide relevant answers based on the information retrieved from your documents and the LLM's capabilities.
+---
+
+## Project Structure
+```text
+RAG-app-with-ollama/
+├─ streamlit_app.py           # Streamlit UI and sidebar chat management
+├─ rag_functions.py           # RAG pipeline: load, split, embed, retrieve, chain
+├─ helpers_func.py            # Uploads, logging, SQLite sessions/messages
+├─ requirements.txt           # Python dependencies
+├─ chat_data.sqlite3          # SQLite DB (created at runtime)
+├─ processed_docs/            # Uploaded documents (saved here)
+└─ chroma_db/                 # ChromaDB artifacts (created at runtime)
+```
+
+---
+
+## Configuration & Customization
+
+### Models
+Change defaults in `rag_functions.py`:
+```21:25:rag_functions.py
+# Constants for AI Models and Chroma DB
+MODEL_NAME = "codegemma:latest" 
+EMBEDDING_MODEL = "nomic-embed-text"
+PERSIST_DIRECTORY = "./chroma_db"
+```
+
+- To use a different chat model (e.g., `llama3:8b`), set `MODEL_NAME` accordingly and run `ollama pull llama3:8b`.
+- To use a different embedding model, update `EMBEDDING_MODEL` and pull it via `ollama` as well.
+
+### Chunking and Retrieval
+Adjust chunking in `split_documents` and retrieval depth in `create_fast_retriever` inside `rag_functions.py`:
+- `chunk_size` (default 1800) and `chunk_overlap` (default 400)
+- `k` in similarity search (default 5)
+
+### GPU/CPU
+The app initializes Ollama integrations with `num_gpu=1` by default. On CPU-only machines, set it to `0` in `rag_functions.py` for both `OllamaEmbeddings` and `ChatOllama`.
+
+### Data Locations
+- Uploaded files: `processed_docs/`
+- Vector store: `chroma_db/`
+- Chat history: `chat_data.sqlite3`
+
+---
+
+## Using the App
+1. Start Ollama (ensure the service is running).
+2. Pull models (once): `ollama pull codegemma:latest` and `ollama pull nomic-embed-text`.
+3. `streamlit run streamlit_app.py`
+4. Upload a document in the UI.
+5. Ask questions. You can start new chats, switch between sessions, and delete sessions via the sidebar.
+
+### Supported Formats
+- PDF, CSV, JSON, TXT
+
+---
+
+## Troubleshooting
+- "Model preload failed" or connection errors: ensure Ollama is installed, running, and the models are pulled.
+- Document load issues (especially PDFs): some environments require additional system packages for `unstructured` loaders. Try upgrading `unstructured` or installing related OS dependencies.
+- Slow first response: the first call warms up the model; subsequent calls are faster.
+- CPU-only systems: set `num_gpu=0` in the Ollama integrations if you do not have a compatible GPU.
+- Clearing state: delete `chroma_db/`, `chat_data.sqlite3`, or files under `processed_docs/` to reset data.
+
+---
+
+## Security & Privacy
+- All processing happens locally if your Ollama server runs on the same machine.
+- Uploaded documents are stored in `processed_docs/` and are not uploaded to any external service by this app.
+
+---
+
+## Roadmap Ideas
+- Multi-document indexing and corpus management
+- Adjustable prompt templates and system instructions in the UI
+- Advanced retrieval strategies (MMR, Rerankers)
+- Export chat transcripts
+
+---
 
 ## Contributing
+Contributions are welcome! Please open an issue or PR with a clear description of the change.
 
-We welcome contributions to this project! If you're interested in helping out, please follow these guidelines:
-
-1.  Fork the repository.
-2.  Create a new branch for your feature or bug fix: `git checkout -b feature-name`
-3.  Make your changes and commit them with descriptive messages.
-4.  Push your changes to your forked repository.
-5.  Create a pull request, explaining your changes and their benefits.
+---
 
 ## License
+Add your preferred license here (e.g., MIT, Apache-2.0). If you choose MIT, include a `LICENSE` file at the repo root.
 
-This project is licensed under the [Your Chosen License] - see the [LICENSE.md](LICENSE.md) file for details.
+---
 
-## Contact
+## Acknowledgments
+- Streamlit, LangChain, ChromaDB, and Ollama communities for great tooling.
 
-If you have any questions or suggestions, please feel free to reach out to Adya Prasad at: adyaprasad@example.com
+---
+
+## References
+- App screenshot used in this README: `https://iili.io/FpFiAns.md.png`
+
 
