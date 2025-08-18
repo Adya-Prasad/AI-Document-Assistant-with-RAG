@@ -1,8 +1,8 @@
-## RAG App with Ollama (Streamlit)
+# RAG AI Document Assistant
 
 ![App Screenshot](https://iili.io/FpFiAns.md.png)
 
-Build a fast, local-first Retrieval-Augmented Generation (RAG) assistant over your own documents using Streamlit, LangChain, ChromaDB, and Ollama. Upload PDFs, CSVs, JSON, or TXT files and ask natural questions; the app retrieves the most relevant chunks and answers using a local LLM.
+A fast, local-first Retrieval-Augmented Generation (RAG) assistant over your documents using Streamlit, LangChain, ChromaDB, and Ollama. Upload PDFs, CSVs, JSON, or TXT files and ask any minute questions; the app retrieves the most relevant chunks and answers using a local LLM.
 
 ### Key Features
 - **Local-first**: Runs entirely on your machine with Ollama models
@@ -13,7 +13,7 @@ Build a fast, local-first Retrieval-Augmented Generation (RAG) assistant over yo
 - **Observability**: Inline timings, doc count, and a detailed process log expander
 
 ### Tech Stack
-- Streamlit UI
+- Streamlit
 - Ollama for LLM and embeddings
 - LangChain (chains, retrievers, loaders)
 - ChromaDB vector store
@@ -24,8 +24,7 @@ Build a fast, local-first Retrieval-Augmented Generation (RAG) assistant over yo
 ## Quickstart
 
 ### 1) Requirements
-- Python 3.10+
-- Ollama installed and running (ensure the background service/daemon is active)
+> Ollama installed and running (ensure the background service/daemon is active)
 
 ### 2) Clone and install
 ```bash
@@ -42,7 +41,7 @@ pip install -r requirements.txt
 
 ### 3) Pull required models in Ollama
 ```bash
-ollama pull codegemma:latest
+ollama pull codegemma:latest # you can use any
 ollama pull nomic-embed-text
 ```
 
