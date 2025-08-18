@@ -1,0 +1,30 @@
+[
+    {
+        "id": "Person1",
+        "type": "Billionaire",
+        "personal_details": {
+            "name": "Maharaja Ji",
+            "age": 45,
+            "nationality": "India",
+            "city": "Varanasi",
+            "gender": "Male"
+        },
+        "wealth_details": {
+            "net_worth_millions": 500,
+            "investable_assets_millions": 48,
+            "source_of_wealth": ["Entrepreneurship", "Investments"],
+            "industries_involved": ["Technology", "Real Estate"],
+            "philanthropic_donations_millions": 3
+        },
+        "lifestyle_indicators": {
+            "luxury_purchases": ["Private Jet", "Bungalow"],
+            "hobbies": ["Programming", "Philanthropy", "Travel"],
+            "residences": "Primary Residence - Delhi Penthouse"
+        },
+        "financial_services": {
+            "private_banking": true,
+            "wealth_management": true,
+            "family_office_services": false
+        }
+    }
+]

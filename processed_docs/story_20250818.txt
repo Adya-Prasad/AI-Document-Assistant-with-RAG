@@ -1,0 +1,29 @@
+he compute utilization in serving LLMs can be improved
+by batching multiple requests. Because the requests share
+the same model weights, the overhead of moving weights is
+amortized across the requests in a batch, and can be over-
+whelmed by the computational overhead when the batch
+size is sufficiently large. However, batching the requests
+to an LLM service is non-trivial for two reasons. First, the
+requests may arrive at different times. A naive batching strat-
+egy would either make earlier requests wait for later ones
+or delay the incoming requests until earlier ones finish, lead-
+ing to significant queueing delays. Second, the requests may
+have vastly different input and output lengths (Fig. 11). A
+straightforward batching technique would pad the inputs
+and outputs of the requests to equalize their lengths, wasting
+GPU computation and memory.
+
+To address this problem, fine-grained batching mecha-
+nisms, such as cellular batching [16] and iteration-level sched-
+uling [ 60 ], have been proposed. Unlike traditional methods
+that work at the request level, these techniques operate at
+the iteration level. After each iteration, completed requests
+are removed from the batch, and new ones are added. There-
+fore, a new request can be processed after waiting for a
+single iteration, not waiting for the entire batch to complete.
+Moreover, with special GPU kernels, these techniques elim-
+inate the need to pad the inputs and outputs. By reducing
+the queueing delay and the inefficiencies from padding, the
+fine-grained batching mechanisms significantly increase the
+throughput of LLM serving
