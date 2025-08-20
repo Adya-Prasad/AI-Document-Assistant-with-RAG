@@ -1,6 +1,7 @@
 # RAG AI Document Assistant
-
-![App Screenshot](https://iili.io/FpFiAns.md.png)
+<p align="center">
+  <img src="https://iili.io/FyTgiGe.md.png" alt="App Screenshot" >
+</p>
 
 A fast, local-first Retrieval-Augmented Generation (RAG) assistant over your documents using Streamlit, LangChain, ChromaDB, and Ollama. Upload PDFs, CSVs, JSON, or TXT files and ask any minute questions; the app retrieves the most relevant chunks and answers using a local LLM.
 
