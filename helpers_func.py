@@ -261,17 +261,17 @@ def save_uploaded_file(uploaded_file):
         file_extension = Path(uploaded_file.name).suffix
         original_name = Path(uploaded_file.name).stem
 
-        # check if a file with the same original name exists (any extension)
+        # check if a file with the same original name exists (need to update it!)
         if os.path.exists(UPLOAD_DIRECTORY):
             existing_files = os.listdir(UPLOAD_DIRECTORY)
             for current_file in existing_files:
                 if current_file.startswith(f"{original_name}_"):
-                    existing_path = os.path.join(UPLOAD_DIRECTORY, current_file)
+                    existing_path = os.path.join(UPLOAD_DIRECTORY, current_file).replace(os.sep, '/')
                     add_log(f"SAME Document found in memory: {current_file}")
                     return existing_path, current_file
         # Create unique filename and path in memory
         unique_filename = f"{original_name}_{timestamp}{file_extension}"
-        file_path = os.path.join(UPLOAD_DIRECTORY, unique_filename)
+        file_path = os.path.join(UPLOAD_DIRECTORY, unique_filename).replace(os.sep, '/')
 
         # create directory if it don't exist
         os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)

@@ -6,8 +6,6 @@ from rag_functions import (
     process_query_with_document,
     process_query,
     create_vector_db_from_document,
-    display_chat_history,
-    display_process_logs,
     # Constants
     MODEL_NAME,
     EMBEDDING_MODEL
@@ -43,8 +41,6 @@ def main():
         page_icon="📄",
         layout="wide"
     )
-
-    
 
     # Custom styling with radio button styling
     st.markdown(

@@ -132,7 +132,7 @@ def create_fast_retriever(vector_db):
     add_log("Enhanced retriever created (k = 5 similarity search)")
     return retriever
 
-def create_chain(retriever, llm):
+def create_chain(llm):
     """Create the RAG chain"""
     add_log("Building RAG chain")
     template = """You are a knowledgeable assistant helping users understand documents and extract asked information from the document. Based on attached document, please provide a comprehensive and correct answer to the user's question.
@@ -273,7 +273,7 @@ def process_query(user_input, overall_start):
         
         # Create chain and generate response
         add_log("Creating processing chain...")
-        rag_chain = create_chain(retriever, llm)
+        rag_chain = create_chain(llm)
 
         add_log("Generating response...")
         response_start = time.time()
