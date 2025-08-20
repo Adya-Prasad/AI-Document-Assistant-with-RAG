@@ -93,6 +93,7 @@ def create_vector_db_from_document(doc_path):
         add_log("Embedding model ready")
     except Exception as e:
         add_log(f"Error pulling embedding model: {str(e)}", "ERROR")
+        st.error(str(e))
         return None
 
     embedding = OllamaEmbeddings(
@@ -108,7 +109,6 @@ def create_vector_db_from_document(doc_path):
 
     add_log("Creating vector database from document chunks...")
     try:
-        # doc_name = Path(doc_path).stem
         collection_name = f"doc_{get_file_hash(open(doc_path, 'rb').read())[:8]}"
         
         vector_db = Chroma.from_documents(
@@ -177,16 +177,6 @@ def preload_model():
 def format_docs(docs):
     """Format documents for context"""
     return "\n\n".join(doc.page_content for doc in docs)
-
-def display_chat_history():
-    """Display chat history in a nice format"""
-    if st.session_state.chat_history:
-        st.subheader("Chat History")
-        
-        for i, chat in enumerate(reversed(st.session_state.chat_history)):
-            with st.expander(f"Q: {chat['question'][:50]}... ({chat['timestamp']})", expanded=(i==0)):
-                st.markdown(f"**Response:** {chat['answer'][:80]}")
-                st.markdown(f"_Document:_ {chat['document']}")
 
 def display_process_logs():
     """Display process logs in a dropdown"""
