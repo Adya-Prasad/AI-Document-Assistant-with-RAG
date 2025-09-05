@@ -2,7 +2,7 @@
 
 ![A beautiful sunset over the mountains](https://i.postimg.cc/SxFH8jBJ/gfrgfrgrdgt.png "App Screenshot")
 
-*A local-first RAG-powered document assistant using LangChain for LLM orchestration, Ollama for hosting local models (e.g., codegemma) and embeddings with GPU acceleration, ChromaDB as a persistent vector store, and Streamlit for web UI.
+* A local-first RAG-powered document assistant using LangChain for LLM orchestration, Ollama for hosting local models (e.g., codegemma) and embeddings with GPU acceleration, ChromaDB as a persistent vector store, and Streamlit for web UI.
 * An end-to-end pipeline: uploaded documents are dynamically chunked (~1800 tokens with ~400 overlap), then embedded and indexed in ChromaDB, finally retrieved and passed LLM to generate responses with visible context and performance metrics
 
 ### Key Features
